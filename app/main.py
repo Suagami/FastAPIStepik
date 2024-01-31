@@ -1,25 +1,13 @@
+import uvicorn
+
 from fastapi import FastAPI
-from models.models import User, Feedback
+from routes.login import auth
+from routes.resources import resource
 
 app = FastAPI()
+app.include_router(auth)
+app.include_router(resource)
 
 
-@app.get("/")
-async def read_root():
-    return {'message':'hi'}
-
-
-
-# Пример пользовательских данных (для демонстрационных целей)
-fake_db = []
-
-# Конечная точка для получения информации о пользователе по ID
-@app.get("/users/{user_id}")
-def read_user(user_id: int):
-    return {"error": "User not found"}
-
-@app.post("/feedback/")
-def post_feedback(feedback: Feedback):
-    fake_db.append(feedback)
-    print(fake_db)
-    return {"message": f"Feedback received. Thank you, {feedback.name}!"}
+if __name__ == "__main__":
+    uvicorn.run(app, host='127.0.0.1', port=8000)
